@@ -11,7 +11,7 @@
       padding: 20px;
     }
     .container {
-      max-width: 600px;
+      max-width: 700px;
       margin: auto;
       padding: 20px;
       background-color: #fff;
@@ -30,10 +30,13 @@
     input[type="text"], select, button {
       width: 100%;
       padding: 10px;
-      margin: 5px 0 20px;
+      margin: 5px 0 15px;
       border: 1px solid #ddd;
       border-radius: 4px;
       box-sizing: border-box;
+    }
+    input[readonly] {
+      background-color: #eee;
     }
     .radio-group {
       display: flex;
@@ -68,38 +71,53 @@
       text-align: center;
       margin-top: 10px;
     }
+    .endereco-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+    }
+    .endereco-grid label {
+      margin-top: 10px;
+    }
+    .endereco-grid input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 2px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Gerador de XML - Agentes</h1>
     <form id="formulario">
-      <!-- Tipo de agente -->
+      <!-- Tipo de nome -->
       <label>Escolha o tipo de nome:</label>
       <div class="radio-group">
-        <label for="nomePessoa"><input type="radio" name="tipoNome" id="nomePessoa" value="pessoa" checked> Pessoa</label>
-        <label for="nomeEmpresa"><input type="radio" name="tipoNome" id="nomeEmpresa" value="empresa"> Empresa</label>
+        <label><input type="radio" name="tipoNome" id="nomePessoa" value="pessoa" checked> Pessoa</label>
+        <label><input type="radio" name="tipoNome" id="nomeEmpresa" value="empresa"> Empresa</label>
       </div>
 
-      <!-- Nome e Nome Fantasia -->
+      <!-- Nome e Fantasia -->
       <label for="nome">Nome do Agente:</label>
       <input type="text" id="nome" placeholder="Nome do agente" required />
 
       <label for="fantasia">Nome Fantasia do Agente:</label>
       <input type="text" id="fantasia" placeholder="Nome fantasia" required />
-      
-      <!-- Botão para gerar nome e nome fantasia -->
+
       <button type="button" id="gerarNomeFantasia">Gerar Nome e Fantasia</button>
 
       <!-- Tipo de pessoa -->
       <label>Tipo de Pessoa:</label>
       <div class="radio-group">
-        <label for="tipoFisica"><input type="radio" name="tipoPessoa" id="tipoFisica" value="F"> Física</label>
-        <label for="tipoJuridica"><input type="radio" name="tipoPessoa" id="tipoJuridica" value="J"> Jurídica</label>
-        <label for="tipoRural"><input type="radio" name="tipoPessoa" id="tipoRural" value="R"> Rural</label>
+        <label><input type="radio" name="tipoPessoa" id="tipoFisica" value="F" checked> Física</label>
+        <label><input type="radio" name="tipoPessoa" id="tipoJuridica" value="J"> Jurídica</label>
+        <label><input type="radio" name="tipoPessoa" id="tipoRural" value="R"> Rural</label>
       </div>
 
-      <!-- Estado -->
+      <!-- Estado e Município -->
       <label for="estado">Estado (UF):</label>
       <select id="estado" required>
         <option value="">Selecione o estado</option>
@@ -112,22 +130,40 @@
         <option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
       </select>
 
-      <!-- Município -->
       <label for="municipio">Município:</label>
       <input type="text" id="municipio" placeholder="Digite o nome do município" required />
 
-      <!-- Botão para gerar XML -->
+      <!-- Endereço gerado automaticamente -->
+      <div class="endereco-grid">
+        <div>
+          <label for="cep">CEP:</label>
+          <input type="text" id="cep" readonly />
+        </div>
+        <div>
+          <label for="logradouro">Logradouro:</label>
+          <input type="text" id="logradouro" readonly />
+        </div>
+        <div>
+          <label for="numero">Número:</label>
+          <input type="text" id="numero" readonly />
+        </div>
+        <div>
+          <label for="bairro">Bairro:</label>
+          <input type="text" id="bairro" readonly />
+        </div>
+      </div>
+
+      <!-- Geração do XML -->
       <button type="submit">Gerar XML</button>
     </form>
 
-    <!-- Área de exibição do XML -->
+    <!-- Resultado -->
     <h3>XML Gerado:</h3>
     <div id="saidaXml"></div>
     <button id="copiarXml">Copiar XML</button>
     <div id="copiadoMsg">XML copiado!</div>
   </div>
 
-  <!-- Script principal -->
   <script src="../src/renderer.js"></script>
 </body>
 </html>

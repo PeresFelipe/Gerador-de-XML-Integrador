@@ -9,6 +9,7 @@ function createWindow() {
     height: 600,
     resizable: true,
     webPreferences: {
+	  sandbox: false,
       contextIsolation: true,
       nodeIntegration: false, // importante manter falso com contextIsolation: true
       preload: path.join(__dirname, 'preload.js'),
@@ -17,6 +18,7 @@ function createWindow() {
 
   win.setMenu(null); // remove menu padrão (opcional)
   win.loadFile(path.join(__dirname, '..', 'views', 'index.html'));
+
 }
 
 app.whenReady().then(() => {
