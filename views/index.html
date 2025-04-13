@@ -152,6 +152,25 @@
           <input type="text" id="bairro" readonly />
         </div>
       </div>
+	  
+	  <!-- Tipo do Agente -->
+<label>Tipo do Agente:</label>
+<div class="radio-group">
+  <label><input type="radio" name="tipoAgente" value="cliente" required> Cliente</label>
+  <label><input type="radio" name="tipoAgente" value="fornecedor"> Fornecedor</label>
+  <label><input type="radio" name="tipoAgente" value="representante"> Representante</label>
+  <label><input type="radio" name="tipoAgente" value="contato"> Contato</label>
+</div>
+<div class="radio-group">
+  <label><input type="radio" name="tipoAgente" value="transportadora"> Transportadora</label>
+  <label><input type="radio" name="tipoAgente" value="obrigacao"> Obrigação</label>
+  <label><input type="radio" name="tipoAgente" value="colaborador"> Colaborador</label>
+  <label><input type="radio" name="tipoAgente" value="outros"> Outros</label>
+</div>
+<div class="radio-group">
+  <label><input type="radio" name="tipoAgente" value="obra"> Obra</label>
+  <label><input type="radio" name="tipoAgente" value="sindicato"> Sindicato</label>
+</div>
 
       <!-- Geração do XML -->
       <button type="submit">Gerar XML</button>

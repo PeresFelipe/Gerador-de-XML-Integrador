@@ -31,6 +31,19 @@ window.addEventListener('DOMContentLoaded', () => {
     return 'Outro';
   }
 
+  const tipoAgenteMap = {
+    cliente: 'C',
+    fornecedor: 'F',
+    representante: 'R',
+    contato: 'E',
+    transportadora: 'T',
+    obrigacao: 'S',
+    colaborador: 'U',
+    outros: 'O',
+    obra: 'B',
+    sindicato: 'D',
+  };
+
   if (btnGerarNomeFantasia) {
     btnGerarNomeFantasia.addEventListener('click', () => {
       const tipoNome = document.querySelector('input[name="tipoNome"]:checked')?.value;
@@ -62,35 +75,53 @@ window.addEventListener('DOMContentLoaded', () => {
       const municipio = document.getElementById('municipio').value;
       const email = nome.toLowerCase().replace(/\s/g, '.') + '@exemplo.com';
 
+      const tipoAgenteSelecionado = document.querySelector('input[name="tipoAgente"]:checked')?.value;
+      if (!tipoAgenteSelecionado || !tipoAgenteMap[tipoAgenteSelecionado]) {
+        alert('Selecione o tipo de agente antes de gerar o XML.');
+        return;
+      }
+
       try {
-        // Buscar código do município
         const resultadoIBGE = await window.geradorXML.buscarCodigoMunicipio(municipio, estado);
         const codigoMunicipio = resultadoIBGE.codigo;
         if (!codigoMunicipio) throw new Error('Código do município não encontrado');
 
-        // Buscar endereço
         const endereco = await window.geradorXML.buscarEnderecoPorMunicipio(municipio, estado);
         if (!endereco) throw new Error('Endereço não encontrado');
 
         const sigla = inferirTipoLogradouro(endereco.logradouro);
 
-        // Preencher campos na interface
         document.getElementById('cep').value = endereco.cep || '';
         document.getElementById('logradouro').value = endereco.logradouro || '';
         document.getElementById('numero').value = endereco.numero || '';
         document.getElementById('bairro').value = endereco.bairro || '';
 
-        // Se o campo sigla existir, atualiza
         const inputSigla = document.getElementById('sigla');
         if (inputSigla) inputSigla.value = sigla;
 
+        let blocoPessoa = '';
+        if (tipoPessoa === 'F') {
+          const cpf = window.geradorXML.gerarCPF();
+          blocoPessoa = `
+  <PesFisica OPERACAO="I">
+    <AGN_ST_CPF>${cpf}</AGN_ST_CPF>
+  </PesFisica>`;
+        } else if (tipoPessoa === 'J') {
+          const cnpj = window.geradorXML.gerarCNPJ();
+          blocoPessoa = `
+  <AGN_ST_CGC>${cnpj}</AGN_ST_CGC>`;
+        }
+
         const xml = `
-<AGENTE>
+<Agente OPERACAO="I">
+  <AgenteId OPERACAO="I">
+    <AGN_TAU_ST_CODIGO>${tipoAgenteMap[tipoAgenteSelecionado]}</AGN_TAU_ST_CODIGO>
+  </AgenteId>
   <AGN_NO_RAZAO>${escapeXml(nome)}</AGN_NO_RAZAO>
   <AGN_NO_FANTASIA>${escapeXml(fantasia)}</AGN_NO_FANTASIA>
   <TPP_IN_CODIGO>${escapeXml(tipoPessoa)}</TPP_IN_CODIGO>
   <AGN_NO_EMAIL>${escapeXml(email)}</AGN_NO_EMAIL>
-  <PAI_ST_SIGLA>BRA</PAI_ST_SIGLA>
+  <PA_ST_SIGLA>BRA</PA_ST_SIGLA>
   <UF_ST_SIGLA>${escapeXml(estado)}</UF_ST_SIGLA>
   <MUN_NO_NOME>${escapeXml(municipio)}</MUN_NO_NOME>
   <MUN_IN_CODIGO>${escapeXml(codigoMunicipio)}</MUN_IN_CODIGO>
@@ -98,8 +129,8 @@ window.addEventListener('DOMContentLoaded', () => {
   <AGN_ST_CEP>${escapeXml(endereco.cep)}</AGN_ST_CEP>
   <AGN_ST_LOGRADOURO>${escapeXml(endereco.logradouro)}</AGN_ST_LOGRADOURO>
   <AGN_ST_NUMERO>${escapeXml(endereco.numero)}</AGN_ST_NUMERO>
-  <AGN_ST_BAIRRO>${escapeXml(endereco.bairro)}</AGN_ST_BAIRRO>
-</AGENTE>
+  <AGN_ST_BAIRRO>${escapeXml(endereco.bairro)}</AGN_ST_BAIRRO>${blocoPessoa}
+</Agente>
         `.trim();
 
         saidaXml.textContent = xml;
