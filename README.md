@@ -1,11 +1,33 @@
-# 🧩 Gerador XML Integrador
+# Gerador XML Integrador
 
-Projeto em Electron para geração de XML de agentes com nome, nome fantasia, tipo de pessoa, estado, município e e-mail.
+Projeto desktop desenvolvido em **Electron.js** para geração automatizada de arquivos XML contendo dados de agentes (pessoa física, jurídica ou outros), integrando múltiplas APIs e recursos auxiliares.
 
-## 🚀 Funcionalidades
+## 🧩 Funcionalidades
 
-- Geração de nomes aleatórios (Pessoa Física, Jurídica ou Rural)
-- Geração de nome fantasia com base no nome
+- Geração automática de nomes de pessoas físicas e jurídicas.
+- Geração de CPF e CNPJ válidos (sem pontuação).
+- Geração de XML com os seguintes dados:
+  - Nome e Nome Fantasia
+  - Tipo de pessoa (F - Física, J - Jurídica, R - Representante)
+  - E-mail baseado no nome
+  - UF (selecionável)
+  - Código do município via API IBGE
+  - Dados de endereço via API ViaCEP
+  - Código interno do município via arquivo local `codigo.csv`
+  - Seletor obrigatório de tipo de agente (`<AGN_TAU_ST_CODIGO>`)
+  - Campos fiscais (`<Fiscal OPERACAO="I">`) com checkboxes convertidos para "S" ou "N"
+
+## 🛠️ Tecnologias
+
+- [Electron](https://www.electronjs.org/) (desktop app)
+- HTML5 / CSS3 / JavaScript
+- APIs externas:
+  - [IBGE - Municípios](https://servicodados.ibge.gov.br/api/docs)
+  - [ViaCEP](https://viacep.com.br/)
+- Arquivo CSV local para mapeamento de códigos
+
+## 📁 Estrutura de Pastas
+
 - Seleção de tipo de pessoa (Física, Jurídica, Rural)
 - Seleção de Estado (UF)
 - Entrada manual do Município
