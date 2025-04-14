@@ -79,12 +79,26 @@ button:hover {
   background-color: #005e99;
 }
 
-/* Radio groups */
+/* Botão verde para gerar nome */
+#gerarNomeFantasia {
+  background-color: #28a745;
+  margin-top: 10px;
+}
+
+#gerarNomeFantasia:hover {
+  background-color: #218838;
+}
+
+/* Agrupamento melhor de radio groups */
 .radio-group {
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
   margin-top: 10px;
+}
+
+.radio-group + .radio-group {
+  margin-top: 5px;
 }
 
 .radio-group label {
@@ -124,9 +138,23 @@ button:hover {
   margin-top: 10px;
 }
 
+/* Melhor espaçamento do formulário */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 /* Responsivo */
 @media (max-width: 600px) {
   .radio-group {
     flex-direction: column;
   }
 }
+
+@media (max-width: 400px) {
+  .endereco-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

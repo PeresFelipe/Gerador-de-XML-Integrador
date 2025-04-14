@@ -1,14 +1,38 @@
 {
   "name": "gerador-xml-integrador",
   "version": "1.0.0",
+  "description": "Aplicativo para geração de XMLs integradores com dados fictícios e APIs externas",
+  "author": "Boco",
   "main": "src/main.js",
   "scripts": {
     "start": "electron src/main.js",
-    "debug": "electron src/debug/debugMain.js"
+    "debug": "electron src/debug/debugMain.js",
+    "build": "electron-builder"
   },
   "dependencies": {
-    "electron": "^27.0.0",
+    "csv-parser": "^3.2.0",
     "node-fetch": "^2.7.0",
     "xmlbuilder2": "^3.1.1"
+  },
+  "devDependencies": {
+    "electron": "^35.1.5",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.boco.geradorxml",
+    "productName": "Gerador XML Integrador",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*"
+    ],
+    "win": {
+      "target": "portable",
+      "icon": "assets/icon.ico"
+    },
+    "portable": {
+      "artifactName": "${productName}_Portable.exe"
+    }
   }
 }

@@ -90,9 +90,35 @@
         <label><input type="radio" name="tipoAgente" value="sindicato"> Sindicato</label>
       </div>
 
+      <!-- Configurações Fiscais -->
+      <fieldset>
+        <legend>Configurações Fiscais</legend>
+        <div class="checkbox-group">
+          <label><input type="checkbox" id="escriturar" /> Escriturar</label>
+          <label><input type="checkbox" id="enquadraIPI" /> Enquadra IPI</label>
+          <label><input type="checkbox" id="enquadraICMS" /> Enquadra ICMS</label>
+          <label><input type="checkbox" id="calculaICMSNaoEnq" /> Calcula ICMS não enquadrado</label>
+          <label><input type="checkbox" id="enquadraISS" /> Enquadra ISS</label>
+          <label><input type="checkbox" id="retemIR" /> Retém IR</label>
+          <label><input type="checkbox" id="retemINSS" /> Retém INSS</label>
+          <label><input type="checkbox" id="enquadraSimples" /> Enquadra no Simples</label>
+          <label><input type="checkbox" id="ipiSimples" /> IPI pelo Simples</label>
+          <label><input type="checkbox" id="icmsSimples" /> ICMS pelo Simples</label>
+          <label><input type="checkbox" id="issSimples" /> ISS pelo Simples</label>
+          <label><input type="checkbox" id="inssSimples" /> INSS pelo Simples</label>
+          <label><input type="checkbox" id="retemISS" /> Retém ISS</label>
+          <label><input type="checkbox" id="enquadraPIS" /> Enquadra PIS</label>
+          <label><input type="checkbox" id="enquadraCOFINS" /> Enquadra COFINS</label>
+          <label><input type="checkbox" id="retemCSLL" /> Retém CSLL</label>
+          <label><input type="checkbox" id="enquadraFUNRURAL" /> Enquadra FUNRURAL</label>
+          <label><input type="checkbox" id="enquadraINSSRural" /> Enquadra INSS Rural</label>
+        </div>
+      </fieldset>
+
       <!-- Geração do XML -->
       <button type="submit">Gerar XML</button>
     </form>
+  </div>
 
   <script src="../src/renderer.js"></script>
 </body>

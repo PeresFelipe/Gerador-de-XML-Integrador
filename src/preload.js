@@ -5,6 +5,7 @@ const nomeGenerator = require('./utils/nomeGenerator');
 const { gerarCNPJ } = require('./utils/cnpjGenerator');
 const { gerarCPF } = require('./utils/cpfGenerator');
 const { campoXml } = require('./utils/utils');
+const { getCodigoInternoPorIBGE } = require('./utils/codigoMapper'); // 🆕 novo import
 
 contextBridge.exposeInMainWorld('geradorXML', {
   // 🔤 Geradores de nomes e documentos
@@ -21,6 +22,9 @@ contextBridge.exposeInMainWorld('geradorXML', {
   // 🌐 Integração com APIs externas
   buscarEnderecoPorMunicipio: viaCep.buscarEnderecoPorMunicipio,
   buscarCodigoMunicipio: ibge.buscarCodigoMunicipio,
+
+  // 📥 Código interno a partir do IBGE
+  getCodigoInternoPorIBGE, // 🆕
 
   // 🧩 Utilitários auxiliares
   campoXml,
