@@ -1,28 +1,59 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 
-app.disableHardwareAcceleration(); // Boa prática em apps simples
+app.disableHardwareAcceleration();
+
+let mainWindow;
 
 function createWindow() {
-  const win = new BrowserWindow({
-    width: 800, // aumentei para dar mais espaço à interface
+  mainWindow = new BrowserWindow({
+    width: 800,
     height: 600,
     resizable: true,
     webPreferences: {
-	  sandbox: false,
+      sandbox: false,
       contextIsolation: true,
-      nodeIntegration: false, // importante manter falso com contextIsolation: true
+      nodeIntegration: false,
       preload: path.join(__dirname, 'preload.js'),
     },
   });
 
-  win.setMenu(null); // remove menu padrão (opcional)
-  win.loadFile(path.join(__dirname, '..', 'views', 'index.html'));
+  mainWindow.setMenu(null);
+  mainWindow.loadFile(path.join(__dirname, '..', 'views', 'index.html'));
 
+  // 🐞 Abrir DevTools da janela principal
+  mainWindow.webContents.openDevTools(); 
+}
+
+function createXmlViewerWindow(xmlContent) {
+  const xmlWindow = new BrowserWindow({
+    width: 700,
+    height: 800,
+    webPreferences: {
+      sandbox: false,
+      contextIsolation: true,
+      nodeIntegration: false,
+      preload: path.join(__dirname, 'preload.js'),
+    },
+  });
+
+  xmlWindow.setMenu(null);
+  xmlWindow.loadFile(path.join(__dirname, '..', 'views', 'xmlView.html'));
+
+  // 🐞 Abrir DevTools da janela XML (opcional)
+  xmlWindow.webContents.openDevTools(); 
+
+  xmlWindow.webContents.on('did-finish-load', () => {
+    xmlWindow.webContents.send('set-xml', xmlContent);
+  });
 }
 
 app.whenReady().then(() => {
   createWindow();
+
+  ipcMain.on('abrir-nova-janela', (event, xml) => {
+    createXmlViewerWindow(xml);
+  });
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
@@ -30,5 +61,5 @@ app.whenReady().then(() => {
 });
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit(); // mantém o comportamento padrão de macOS
+  if (process.platform !== 'darwin') app.quit();
 });

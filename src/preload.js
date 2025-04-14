@@ -1,14 +1,13 @@
-const { contextBridge } = require('electron');
-const clipboard = require('electron').clipboard;
-const viaCep = require('./api/viaCep.js');
-const ibge = require('./api/ibge.js');
-const nomeGenerator = require('./utils/nomeGenerator.js');
+const { contextBridge, ipcRenderer, clipboard } = require('electron');
+const viaCep = require('./api/viaCep');
+const ibge = require('./api/ibge');
+const nomeGenerator = require('./utils/nomeGenerator');
 const { gerarCNPJ } = require('./utils/cnpjGenerator');
 const { gerarCPF } = require('./utils/cpfGenerator');
+const { campoXml } = require('./utils/utils');
 
-// Expondo funções com segurança via contextBridge
 contextBridge.exposeInMainWorld('geradorXML', {
-  // 🔤 Geradores de nomes
+  // 🔤 Geradores de nomes e documentos
   gerarNomeAleatorio: nomeGenerator.gerarNomeAleatorio,
   gerarFantasiaAleatorio: nomeGenerator.gerarFantasiaAleatorio,
   gerarNomeEmpresa: nomeGenerator.gerarNomeEmpresa,
@@ -17,11 +16,18 @@ contextBridge.exposeInMainWorld('geradorXML', {
   gerarCPF,
 
   // 📋 Área de transferência
-  copiarParaClipboard: (texto) => clipboard.writeText(texto),
+  copiarParaClipboard: texto => clipboard.writeText(texto),
 
-  // 🌐 APIs externas
+  // 🌐 Integração com APIs externas
   buscarEnderecoPorMunicipio: viaCep.buscarEnderecoPorMunicipio,
-  buscarCodigoMunicipio: ibge.buscarCodigoMunicipio
+  buscarCodigoMunicipio: ibge.buscarCodigoMunicipio,
+
+  // 🧩 Utilitários auxiliares
+  campoXml,
+
+  // 🪟 Comunicação entre janelas
+  abrirNovaJanela: xml => ipcRenderer.send('abrir-nova-janela', xml),
+  receberXml: callback => ipcRenderer.on('set-xml', (event, data) => callback(data))
 });
 
 console.log('[preload] geradorXML carregado!');

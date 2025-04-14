@@ -2,158 +2,125 @@ window.addEventListener('DOMContentLoaded', () => {
   console.log('[renderer] window.geradorXML:', window.geradorXML);
 
   const form = document.getElementById('formulario');
-  const saidaXml = document.getElementById('saidaXml');
-  const btnCopiar = document.getElementById('copiarXml');
   const btnGerarNomeFantasia = document.getElementById('gerarNomeFantasia');
 
-  function escapeXml(unsafe) {
-    return String(unsafe ?? '').replace(/[<>&'"]/g, (c) => {
-      switch (c) {
-        case '<': return '&lt;';
-        case '>': return '&gt;';
-        case '&': return '&amp;';
-        case '\'': return '&apos;';
-        case '"': return '&quot;';
-        default: return c;
-      }
-    });
-  }
+  const getValue = (id) => document.getElementById(id)?.value || '';
+  const setValue = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.value = value;
+  };
 
-  function inferirTipoLogradouro(logradouro) {
-    if (typeof logradouro !== 'string') return '';
+  const inferirTipoLogradouro = (logradouro = '') => {
     const lower = logradouro.toLowerCase();
-
     if (lower.startsWith('av')) return 'Avenida';
     if (lower.startsWith('rua')) return 'Rua';
     if (lower.startsWith('trav')) return 'Travessa';
     if (lower.startsWith('rod')) return 'Rodovia';
-
     return 'Outro';
-  }
-
-  const tipoAgenteMap = {
-    cliente: 'C',
-    fornecedor: 'F',
-    representante: 'R',
-    contato: 'E',
-    transportadora: 'T',
-    obrigacao: 'S',
-    colaborador: 'U',
-    outros: 'O',
-    obra: 'B',
-    sindicato: 'D',
   };
 
-  if (btnGerarNomeFantasia) {
-    btnGerarNomeFantasia.addEventListener('click', () => {
-      const tipoNome = document.querySelector('input[name="tipoNome"]:checked')?.value;
-      if (!tipoNome) return;
+  const tipoAgenteMap = {
+    cliente: 'C', fornecedor: 'F', representante: 'R', contato: 'E',
+    transportadora: 'T', obrigacao: 'S', colaborador: 'U', outros: 'O',
+    obra: 'B', sindicato: 'D',
+  };
 
-      let nome, fantasia;
+  btnGerarNomeFantasia?.addEventListener('click', () => {
+    const tipoNome = document.querySelector('input[name="tipoNome"]:checked')?.value;
+    if (!tipoNome) return;
 
-      if (tipoNome === 'pessoa') {
-        nome = window.geradorXML.gerarNomeAleatorio();
-        fantasia = window.geradorXML.gerarFantasiaAleatorio(nome);
-      } else {
-        nome = window.geradorXML.gerarNomeEmpresa();
-        fantasia = window.geradorXML.gerarFantasiaEmpresaBaseada(nome);
-      }
+    let nome, fantasia;
+    if (tipoNome === 'pessoa') {
+      nome = window.geradorXML.gerarNomeAleatorio();
+      fantasia = window.geradorXML.gerarFantasiaAleatorio(nome);
+    } else {
+      nome = window.geradorXML.gerarNomeEmpresa();
+      fantasia = window.geradorXML.gerarFantasiaEmpresaBaseada(nome);
+    }
 
-      document.getElementById('nome').value = nome;
-      document.getElementById('fantasia').value = fantasia;
-    });
-  }
+    setValue('nome', nome);
+    setValue('fantasia', fantasia);
+  });
 
-  if (form) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-      const nome = document.getElementById('nome').value;
-      const fantasia = document.getElementById('fantasia').value;
-      const tipoPessoa = document.querySelector('input[name="tipoPessoa"]:checked')?.value || '';
-      const estado = document.getElementById('estado').value;
-      const municipio = document.getElementById('municipio').value;
-      const email = nome.toLowerCase().replace(/\s/g, '.') + '@exemplo.com';
+    const nome = getValue('nome');
+    const fantasia = getValue('fantasia');
+    const tipoPessoa = document.querySelector('input[name="tipoPessoa"]:checked')?.value || '';
+    const estado = getValue('estado');
+    const municipio = getValue('municipio');
+    const tipoAgenteSelecionado = document.querySelector('input[name="tipoAgente"]:checked')?.value;
 
-      const tipoAgenteSelecionado = document.querySelector('input[name="tipoAgente"]:checked')?.value;
-      if (!tipoAgenteSelecionado || !tipoAgenteMap[tipoAgenteSelecionado]) {
-        alert('Selecione o tipo de agente antes de gerar o XML.');
-        return;
-      }
+    if (!municipio || !estado || !tipoAgenteSelecionado) {
+      alert('Preencha todos os campos obrigatórios antes de gerar o XML.');
+      return;
+    }
 
-      try {
-        const resultadoIBGE = await window.geradorXML.buscarCodigoMunicipio(municipio, estado);
-        const codigoMunicipio = resultadoIBGE.codigo;
-        if (!codigoMunicipio) throw new Error('Código do município não encontrado');
+    const email = nome.toLowerCase().replace(/\s/g, '.') + '@exemplo.com';
 
-        const endereco = await window.geradorXML.buscarEnderecoPorMunicipio(municipio, estado);
-        if (!endereco) throw new Error('Endereço não encontrado');
+    try {
+      // Busca IBGE e endereço ao mesmo tempo
+      const [resultadoIBGE, endereco] = await Promise.all([
+        window.geradorXML.buscarCodigoMunicipio(municipio, estado),
+        window.geradorXML.buscarEnderecoPorMunicipio(municipio, estado)
+      ]);
 
-        const sigla = inferirTipoLogradouro(endereco.logradouro);
+      if (!resultadoIBGE?.codigo) throw new Error('Código do município não encontrado');
+      if (!endereco) throw new Error('Endereço não encontrado');
 
-        document.getElementById('cep').value = endereco.cep || '';
-        document.getElementById('logradouro').value = endereco.logradouro || '';
-        document.getElementById('numero').value = endereco.numero || '';
-        document.getElementById('bairro').value = endereco.bairro || '';
+      const codigoMunicipio = resultadoIBGE.codigo;
+      const sigla = inferirTipoLogradouro(endereco.logradouro);
 
-        const inputSigla = document.getElementById('sigla');
-        if (inputSigla) inputSigla.value = sigla;
+      setValue('cep', endereco.cep || '');
+      setValue('logradouro', endereco.logradouro || '');
+      setValue('numero', endereco.numero || '');
+      setValue('bairro', endereco.bairro || '');
+      setValue('sigla', sigla);
 
-        let blocoPessoa = '';
-        if (tipoPessoa === 'F') {
-          const cpf = window.geradorXML.gerarCPF();
-          blocoPessoa = `
+      const campo = window.geradorXML.campoXml;
+
+      let blocoPessoa = '';
+      if (tipoPessoa === 'F') {
+        const cpf = window.geradorXML.gerarCPF();
+        blocoPessoa = `
   <PesFisica OPERACAO="I">
-    <AGN_ST_CPF>${cpf}</AGN_ST_CPF>
+    <AGN_ST_CPF>${campo(cpf)}</AGN_ST_CPF>
   </PesFisica>`;
-        } else if (tipoPessoa === 'J') {
-          const cnpj = window.geradorXML.gerarCNPJ();
-          blocoPessoa = `
-  <AGN_ST_CGC>${cnpj}</AGN_ST_CGC>`;
-        }
+      } else if (tipoPessoa === 'J') {
+        const cnpj = window.geradorXML.gerarCNPJ();
+        blocoPessoa = `
+  <AGN_ST_CGC>${campo(cnpj)}</AGN_ST_CGC>`;
+      }
 
-        const xml = `
+      const xml = `
 <Agente OPERACAO="I">
   <AgenteId OPERACAO="I">
-    <AGN_TAU_ST_CODIGO>${tipoAgenteMap[tipoAgenteSelecionado]}</AGN_TAU_ST_CODIGO>
+    <AGN_TAU_ST_CODIGO>${campo(tipoAgenteMap[tipoAgenteSelecionado])}</AGN_TAU_ST_CODIGO>
   </AgenteId>
-  <AGN_NO_RAZAO>${escapeXml(nome)}</AGN_NO_RAZAO>
-  <AGN_NO_FANTASIA>${escapeXml(fantasia)}</AGN_NO_FANTASIA>
-  <TPP_IN_CODIGO>${escapeXml(tipoPessoa)}</TPP_IN_CODIGO>
-  <AGN_NO_EMAIL>${escapeXml(email)}</AGN_NO_EMAIL>
+  <AGN_NO_RAZAO>${campo(nome, 80)}</AGN_NO_RAZAO>
+  <AGN_NO_FANTASIA>${campo(fantasia, 80)}</AGN_NO_FANTASIA>
+  <TPP_IN_CODIGO>${campo(tipoPessoa)}</TPP_IN_CODIGO>
+  <AGN_NO_EMAIL>${campo(email, 30)}</AGN_NO_EMAIL>
   <PA_ST_SIGLA>BRA</PA_ST_SIGLA>
-  <UF_ST_SIGLA>${escapeXml(estado)}</UF_ST_SIGLA>
-  <MUN_NO_NOME>${escapeXml(municipio)}</MUN_NO_NOME>
-  <MUN_IN_CODIGO>${escapeXml(codigoMunicipio)}</MUN_IN_CODIGO>
-  <TPL_ST_SIGLA>${escapeXml(sigla)}</TPL_ST_SIGLA>
-  <AGN_ST_CEP>${escapeXml(endereco.cep)}</AGN_ST_CEP>
-  <AGN_ST_LOGRADOURO>${escapeXml(endereco.logradouro)}</AGN_ST_LOGRADOURO>
-  <AGN_ST_NUMERO>${escapeXml(endereco.numero)}</AGN_ST_NUMERO>
-  <AGN_ST_BAIRRO>${escapeXml(endereco.bairro)}</AGN_ST_BAIRRO>${blocoPessoa}
-</Agente>
-        `.trim();
+  <UF_ST_SIGLA>${campo(estado)}</UF_ST_SIGLA>
+  <MUN_NO_NOME>${campo(municipio)}</MUN_NO_NOME>
+  <MUN_IN_CODIGO>${campo(codigoMunicipio)}</MUN_IN_CODIGO>
+  <TPL_ST_SIGLA>${campo(sigla)}</TPL_ST_SIGLA>
+  <AGN_ST_CEP>${campo(endereco.cep)}</AGN_ST_CEP>
+  <AGN_ST_LOGRADOURO>${campo(endereco.logradouro, 50)}</AGN_ST_LOGRADOURO>
+  <AGN_ST_NUMERO>${campo(endereco.numero, 10)}</AGN_ST_NUMERO>
+  <AGN_ST_BAIRRO>${campo(endereco.bairro, 30)}</AGN_ST_BAIRRO>${blocoPessoa}
+</Agente>`.trim();
 
-        saidaXml.textContent = xml;
-      } catch (error) {
-        alert('Erro ao buscar endereço ou código do município.');
-        console.error('Erro:', error);
-      }
-    });
-  }
+      sessionStorage.setItem('xmlGerado', xml);
+      window.location.href = 'xml.html';
 
-  if (btnCopiar) {
-    btnCopiar.addEventListener('click', () => {
-      const texto = saidaXml?.textContent;
-      if (texto) {
-        window.geradorXML.copiarParaClipboard(texto);
-        const msg = document.getElementById('copiadoMsg');
-        if (msg) {
-          msg.style.display = 'block';
-          setTimeout(() => msg.style.display = 'none', 2000);
-        }
-      }
-    });
-  }
+    } catch (error) {
+      alert('Erro ao buscar endereço ou código do município.');
+      console.error('Erro ao gerar XML:', error);
+    }
+  });
 
-  console.log("renderer.js carregado com sucesso!");
+  console.log('renderer.js carregado com sucesso!');
 });
