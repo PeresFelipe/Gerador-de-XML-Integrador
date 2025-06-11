@@ -1,160 +1,152 @@
-/* Reset */
+/* Reset básico */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Base */
+/* Fonte e fundo */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f4f9;
-  padding: 20px;
+  background-color: #f3f4f6;
   color: #333;
+  padding: 20px;
 }
 
 /* Container principal */
 .container {
-  max-width: 800px;
-  margin: auto;
-  padding: 30px;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
 }
 
-/* Títulos */
-h1, h3 {
+h1 {
   text-align: center;
-  color: #007acc;
-  margin-bottom: 20px;
+  margin-bottom: 35px;
+  color: #222;
+  font-size: 28px;
 }
 
-/* Labels */
-label {
+/* Estilo geral dos labels e inputs */
+form label {
   display: block;
-  margin-top: 10px;
+  margin-top: 20px;
+  margin-bottom: 6px;
   font-weight: 600;
   color: #444;
 }
 
-/* Inputs e selects */
 input[type="text"],
-input[type="email"],
+input[type="number"],
 select {
   width: 100%;
-  padding: 10px;
-  margin-top: 5px;
+  padding: 12px 14px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  box-sizing: border-box;
-  transition: border-color 0.3s;
-}
-
-input[readonly] {
-  background-color: #f1f1f1;
+  background-color: #f9fafb;
+  font-size: 15px;
+  transition: border-color 0.2s ease;
 }
 
 input:focus,
 select:focus {
-  border-color: #007acc;
+  border-color: #007bff;
   outline: none;
+}
+
+input[readonly] {
+  background-color: #e9ecef;
 }
 
 /* Botões */
 button {
-  width: 100%;
-  padding: 12px;
-  margin-top: 15px;
-  font-size: 1rem;
-  background-color: #007acc;
+  margin-top: 30px;
+  padding: 12px 24px;
+  background-color: #007bff;
   color: white;
+  font-size: 15px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 button:hover {
-  background-color: #005e99;
+  background-color: #0056b3;
+  transform: translateY(-1px);
 }
 
-/* Botão verde para gerar nome */
-#gerarNomeFantasia {
-  background-color: #28a745;
-  margin-top: 10px;
-}
-
-#gerarNomeFantasia:hover {
-  background-color: #218838;
-}
-
-/* Agrupamento melhor de radio groups */
-.radio-group {
+/* Grupos de opções */
+.radio-group,
+.checkbox-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 12px;
   margin-top: 10px;
 }
 
-.radio-group + .radio-group {
-  margin-top: 5px;
-}
-
-.radio-group label {
+.radio-group label,
+.checkbox-group label {
   display: flex;
   align-items: center;
+  gap: 6px;
+  background-color: #f1f3f5;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
   font-weight: normal;
-  gap: 5px;
+  border: 1px solid #ccc;
+  transition: background-color 0.2s ease;
 }
 
-/* Endereço em grid */
-.endereco-grid {
+.radio-group input[type="radio"],
+.checkbox-group input[type="checkbox"] {
+  accent-color: #007bff;
+}
+
+.radio-group label:hover,
+.checkbox-group label:hover {
+  background-color: #e0e7ff;
+}
+
+/* Fieldsets */
+fieldset {
+  border: 1px solid #dcdcdc;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 30px;
+  background-color: #fafafa;
+}
+
+fieldset legend {
+  font-weight: bold;
+  font-size: 16px;
+  padding: 0 12px;
+  color: #333;
+}
+
+/* Layout grid nos checkboxes fiscais */
+.checkbox-group {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 15px;
-  margin-top: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
 }
 
-/* XML saída */
-#saidaXml {
-  white-space: pre-wrap;
-  word-break: break-word;
-  background-color: #f7f7f7;
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  margin-top: 10px;
-  font-family: monospace;
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-/* Mensagem de cópia */
-#copiadoMsg {
-  display: none;
-  color: green;
-  text-align: center;
-  margin-top: 10px;
-}
-
-/* Melhor espaçamento do formulário */
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* Responsivo */
+/* Responsividade */
 @media (max-width: 600px) {
-  .radio-group {
+  .radio-group,
+  .checkbox-group {
     flex-direction: column;
   }
-}
 
-@media (max-width: 400px) {
-  .endereco-grid {
+  .checkbox-group {
     grid-template-columns: 1fr;
   }
-}
 
+  button {
+    width: 100%;
+  }
+}
