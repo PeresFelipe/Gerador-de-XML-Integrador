@@ -1,99 +1,107 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br"> <!-- Define o tipo do documento como HTML5 e o idioma como português do Brasil -->
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Gerador de XML - Agentes</title>
-  <link rel="stylesheet" href="../assets/style.css">
+  <meta charset="UTF-8" /> <!-- Define a codificação de caracteres para UTF-8 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/> <!-- Torna a página responsiva para dispositivos móveis -->
+  <title>Gerador de XML - Agentes</title> <!-- Título da aba do navegador -->
+  <link rel="stylesheet" href="../assets/style.css"> <!-- Importa o arquivo CSS com os estilos da interface -->
 </head>
 <body>
-  <div class="container">
-    <h1>Gerador de XML - Agentes</h1>
+  <div class="container"> <!-- Container principal da página -->
+    <h1 class="title">Gerador de XML - Agentes</h1> <!-- Título visível da aplicação -->
 
-    <form id="formulario">
-      <!-- Tipo de nome -->
-      <label>Escolha o tipo de nome:</label>
-      <div class="radio-group">
-        <label><input type="radio" name="tipoNome" id="nomePessoa" value="pessoa" checked> Pessoa</label>
-        <label><input type="radio" name="tipoNome" id="nomeEmpresa" value="empresa"> Empresa</label>
-      </div>
+    <form id="formulario" class="formulario"> <!-- Início do formulário -->
 
-      <!-- Nome e Fantasia -->
-      <label for="nome">Nome do Agente:</label>
-      <input type="text" id="nome" placeholder="Nome do agente" required />
-
-      <label for="fantasia">Nome Fantasia do Agente:</label>
-      <input type="text" id="fantasia" placeholder="Nome fantasia" required />
-
-      <button type="button" id="gerarNomeFantasia">Gerar Nome e Fantasia</button>
-
-      <!-- Tipo de pessoa -->
-      <label>Tipo de Pessoa:</label>
-      <div class="radio-group">
-        <label><input type="radio" name="tipoPessoa" id="tipoFisica" value="F" checked> Física</label>
-        <label><input type="radio" name="tipoPessoa" id="tipoJuridica" value="J"> Jurídica</label>
-        <label><input type="radio" name="tipoPessoa" id="tipoRural" value="R"> Rural</label>
-      </div>
-
-      <!-- Estado e Município -->
-      <label for="estado">Estado (UF):</label>
-      <select id="estado" required>
-        <option value="">Selecione o estado</option>
-        <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option>
-        <option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option>
-        <option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option>
-        <option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option>
-        <option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option>
-        <option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option>
-        <option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
-      </select>
-
-      <label for="municipio">Município:</label>
-      <input type="text" id="municipio" placeholder="Digite o nome do município" required />
-
-      <!-- Endereço gerado automaticamente -->
-      <div class="endereco-grid">
-        <div>
-          <label for="cep">CEP:</label>
-          <input type="text" id="cep" readonly />
+      <!-- Escolha do tipo de nome a ser gerado -->
+      <fieldset class="grupo">
+        <legend>Tipo de Nome</legend>
+        <div class="radio-group">
+          <label><input type="radio" name="tipoNome" value="pessoa" checked> Pessoa</label>
+          <label><input type="radio" name="tipoNome" value="empresa"> Empresa</label>
         </div>
-        <div>
-          <label for="logradouro">Logradouro:</label>
-          <input type="text" id="logradouro" readonly />
-        </div>
-        <div>
-          <label for="numero">Número:</label>
-          <input type="text" id="numero" readonly />
-        </div>
-        <div>
-          <label for="bairro">Bairro:</label>
-          <input type="text" id="bairro" readonly />
-        </div>
+      </fieldset>
+
+      <!-- Campo para o nome do agente -->
+      <div class="input-group">
+        <label for="nome">Nome do Agente:</label>
+        <input type="text" id="nome" placeholder="Nome do agente" required />
       </div>
 
-      <!-- Tipo do Agente -->
-      <label>Tipo do Agente:</label>
-      <div class="radio-group">
-        <label><input type="radio" name="tipoAgente" value="cliente" required> Cliente</label>
-        <label><input type="radio" name="tipoAgente" value="fornecedor"> Fornecedor</label>
-        <label><input type="radio" name="tipoAgente" value="representante"> Representante</label>
-        <label><input type="radio" name="tipoAgente" value="contato"> Contato</label>
-      </div>
-      <div class="radio-group">
-        <label><input type="radio" name="tipoAgente" value="transportadora"> Transportadora</label>
-        <label><input type="radio" name="tipoAgente" value="obrigacao"> Obrigação</label>
-        <label><input type="radio" name="tipoAgente" value="colaborador"> Colaborador</label>
-        <label><input type="radio" name="tipoAgente" value="outros"> Outros</label>
-      </div>
-      <div class="radio-group">
-        <label><input type="radio" name="tipoAgente" value="obra"> Obra</label>
-        <label><input type="radio" name="tipoAgente" value="sindicato"> Sindicato</label>
+      <!-- Campo para o nome fantasia -->
+      <div class="input-group">
+        <label for="fantasia">Nome Fantasia:</label>
+        <input type="text" id="fantasia" placeholder="Nome fantasia" required />
       </div>
 
-      <!-- Configurações Fiscais -->
-      <fieldset>
+      <!-- Botão para gerar automaticamente nome e nome fantasia -->
+      <button type="button" id="gerarNomeFantasia" class="btn secundario">Gerar Nome e Fantasia</button>
+
+      <!-- Seleção do tipo de pessoa: Física, Jurídica ou Rural -->
+      <fieldset class="grupo">
+        <legend>Tipo de Pessoa</legend>
+        <div class="radio-group">
+          <label><input type="radio" name="tipoPessoa" value="F" checked> Física</label>
+          <label><input type="radio" name="tipoPessoa" value="J"> Jurídica</label>
+          <label><input type="radio" name="tipoPessoa" value="R"> Rural</label>
+        </div>
+      </fieldset>
+
+      <!-- Este container só aparece se a opção "Rural" for selecionada -->
+      <div id="tipoRuralFJContainer" style="display:none;">
+        <fieldset class="grupo">
+          <legend>Tipo de Pessoa Rural</legend>
+          <div class="radio-group">
+            <label><input type="radio" name="tipoRuralFJ" value="F"> Física</label>
+            <label><input type="radio" name="tipoRuralFJ" value="J"> Jurídica</label>
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- Dropdown para selecionar o estado (UF) -->
+      <div class="input-group">
+        <label for="estado">Estado (UF):</label>
+        <select id="estado" required>
+          <option value="">Selecione o estado</option>
+          <!-- Lista completa das unidades federativas do Brasil -->
+          <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option>
+          <option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option>
+          <option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option>
+          <option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option>
+          <option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option>
+          <option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option>
+          <option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
+        </select>
+      </div>
+
+      <!-- Campo para digitar o nome do município -->
+      <div class="input-group">
+        <label for="municipio">Município:</label>
+        <input type="text" id="municipio" placeholder="Digite o nome do município" required />
+      </div>
+
+      <!-- Seleção do tipo do agente (ex: cliente, fornecedor, transportadora, etc.) -->
+      <fieldset class="grupo">
+        <legend>Tipo do Agente</legend>
+        <div class="radio-group radio-multiline">
+          <!-- Diversas opções para o tipo de agente -->
+          <label><input type="radio" name="tipoAgente" value="cliente" required> Cliente</label>
+          <label><input type="radio" name="tipoAgente" value="fornecedor"> Fornecedor</label>
+          <label><input type="radio" name="tipoAgente" value="representante"> Representante</label>
+          <label><input type="radio" name="tipoAgente" value="contato"> Contato</label>
+          <label><input type="radio" name="tipoAgente" value="transportadora"> Transportadora</label>
+          <label><input type="radio" name="tipoAgente" value="obrigacao"> Obrigação</label>
+          <label><input type="radio" name="tipoAgente" value="colaborador"> Colaborador</label>
+          <label><input type="radio" name="tipoAgente" value="outros"> Outros</label>
+          <label><input type="radio" name="tipoAgente" value="obra"> Obra</label>
+          <label><input type="radio" name="tipoAgente" value="sindicato"> Sindicato</label>
+        </div>
+      </fieldset>
+
+      <!-- Grupo de checkboxes com configurações fiscais -->
+      <fieldset class="grupo">
         <legend>Configurações Fiscais</legend>
-        <div class="checkbox-group">
+        <div class="checkbox-group checkbox-multiline">
+          <!-- Cada checkbox representa uma configuração fiscal específica -->
           <label><input type="checkbox" id="escriturar" /> Escriturar</label>
           <label><input type="checkbox" id="enquadraIPI" /> Enquadra IPI</label>
           <label><input type="checkbox" id="enquadraICMS" /> Enquadra ICMS</label>
@@ -115,11 +123,41 @@
         </div>
       </fieldset>
 
-      <!-- Geração do XML -->
-      <button type="submit">Gerar XML</button>
+      <!-- Campo para o código da filial -->
+      <div class="input-group">
+        <label for="filialCodigo">Código da Filial (FIL_IN_CODIGO):</label>
+        <input type="number" id="filialCodigo" name="filialCodigo" required />
+      </div>
+
+      <!-- Botão para enviar o formulário e gerar o XML -->
+      <button type="submit" class="btn primario">Gerar XML</button>
     </form>
   </div>
 
+  <!-- Script que mostra/oculta o campo de tipo de pessoa rural dinamicamente -->
+  <script>
+    document.querySelectorAll('input[name="tipoPessoa"]').forEach(input => {
+      input.addEventListener('change', () => {
+        const ruralContainer = document.getElementById('tipoRuralFJContainer');
+        if (input.value === 'R' && input.checked) {
+          ruralContainer.style.display = 'block';
+        } else {
+          ruralContainer.style.display = 'none';
+          const radios = ruralContainer.querySelectorAll('input[name="tipoRural"]');
+          radios.forEach(r => r.checked = false);
+        }
+      });
+    });
+
+    // Ao carregar a página, garante que o container de rural está correto
+    window.addEventListener('DOMContentLoaded', () => {
+      const selected = document.querySelector('input[name="tipoPessoa"]:checked');
+      const ruralContainer = document.getElementById('tipoRuralFJContainer');
+      ruralContainer.style.display = selected && selected.value === 'R' ? 'block' : 'none';
+    });
+  </script>
+
+  <!-- Importa o script principal com a lógica do front-end -->
   <script src="../src/renderer.js"></script>
 </body>
 </html>
